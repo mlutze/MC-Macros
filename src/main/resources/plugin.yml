@@ -1,0 +1,16 @@
+name: Macros
+main: com.gmail.mcdlutze.macros.Main
+version: 1.0
+author: Matt
+description: A plugin for creating macros.
+commands:
+   macro:
+      description: Create, modify, or run a macro.
+      usage: /macro help
+      permission: Macros.user
+      permission-message: You don't have permission to use macros.
+      
+permissions:
+   Macros.user:
+      description: Allows use of macros.
+      default: true
