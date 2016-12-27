@@ -1,5 +1,6 @@
 package com.gmail.mcdlutze.macros;
 
+import org.bukkit.command.PluginCommand;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class Main extends JavaPlugin {
@@ -9,6 +10,11 @@ public class Main extends JavaPlugin {
 	@Override
 	public void onEnable() {
 		main = this;
-		getCommand("macro").setExecutor(new MacroExecutor());
+		PluginCommand pluginCommand = getCommand("macro");
+		MacroExecutor macroExecutor = new MacroExecutor();
+		pluginCommand.setExecutor(macroExecutor);
+		pluginCommand.setTabCompleter(macroExecutor);
 	}
+
+	
 }

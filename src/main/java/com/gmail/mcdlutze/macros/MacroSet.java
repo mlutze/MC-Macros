@@ -56,8 +56,6 @@ public class MacroSet extends HashMap<String, List<String>> implements MetadataV
 	}
 
 	public void invalidate() {
-		// TODO Auto-generated method stub
-
 	}
 
 	public Object value() {

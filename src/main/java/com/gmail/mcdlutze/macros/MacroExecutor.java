@@ -3,20 +3,24 @@ package com.gmail.mcdlutze.macros;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
 
 import com.gmail.mcdlutze.macros.Utilities;
 
-public class MacroExecutor implements CommandExecutor {
+public class MacroExecutor implements CommandExecutor, TabCompleter {
 
 	private String[] helpTemplates = { "help {sub-command}", "new {macro name} {text}", "add {macro name} [{text}]",
 			"remove {macro name}", "list", "view {macro name}", "run {macro name} [{arguments}]" };
+
+	private String[] searchCommands = { "add", "remove", "run", "view" };
 
 	private Map<String, String> helpNotes = new HashMap<String, String>();
 
@@ -162,5 +166,35 @@ public class MacroExecutor implements CommandExecutor {
 			return new ArrayList<String>(0);
 		}
 		return Arrays.asList(args).subList(2, args.length);
+	}
+
+	public List<String> onTabComplete(CommandSender sender, Command command, String label, String[] args) {
+		
+		Player player = (Player) sender;
+		
+		List<String> list = new LinkedList<String>();
+		String subCommand = "";
+		if (args.length >= 1) {
+			subCommand = args[0];
+		}
+		if (args.length <= 1) {
+			for (String key : helpNotes.keySet()) {
+				if (key.startsWith(subCommand)) {
+					list.add(key);
+				}
+			}
+			return list;
+		}
+		if (args.length == 2) {
+			for (String sc : searchCommands) {
+				if (sc.equalsIgnoreCase(subCommand)) {
+					for (String macro : Utilities.getMacroSet(player).keySet()) {
+						list.add(macro);
+					}
+					return list;
+				}
+			}
+		}
+		return null;
 	}
 }
