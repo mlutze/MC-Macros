@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -41,6 +42,11 @@ public class MacroExecutor implements CommandExecutor, TabCompleter {
 			player = (Player) sender;
 		} else {
 			return Utilities.deny("This command can only be executed by a player", sender);
+		}
+		
+		if (label.equals("mr")) {
+			player.chat("/macro run " + Utilities.join(" ", Arrays.asList(args)));
+			return true;
 		}
 
 		if (args.length == 0) {
@@ -126,7 +132,7 @@ public class MacroExecutor implements CommandExecutor, TabCompleter {
 				List<String> lines = Utilities.fillTemplate(template, getArgList(args));
 
 				for (String line : lines) {
-					if (line.toLowerCase().startsWith("/macro")) {
+					if (line.toLowerCase().startsWith("/macro ") || line.toLowerCase().startsWith("/mr ")) {
 						return Utilities.confirm("You cannot call a macro from a macro.", player);
 					}
 				}

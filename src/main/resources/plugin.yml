@@ -6,6 +6,7 @@ description: A plugin for creating macros.
 commands:
    macro:
       description: Create, modify, or run a macro.
+      aliases: mr
       usage: /macro help
       permission: Macros.user
       permission-message: You don't have permission to use macros.
