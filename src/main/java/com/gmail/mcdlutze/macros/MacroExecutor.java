@@ -42,9 +42,11 @@ public class MacroExecutor implements CommandExecutor, TabCompleter {
 			return Utilities.deny("This command can only be executed by a player", sender);
 		}
 		
-		if (label.equals("mr")) {
-			player.chat("/macro run " + Utilities.join(" ", Arrays.asList(args)));
-			return true;
+		if (label.equalsIgnoreCase("mr")) {
+			String[] temp = new String[args.length+1];
+			System.arraycopy(args, 0, temp, 1, args.length);
+			temp[0] = "run";
+			args = temp;
 		}
 
 		if (args.length == 0) {
