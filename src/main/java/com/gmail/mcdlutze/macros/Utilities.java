@@ -7,6 +7,8 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 public class Utilities {
+	
+	public static final String METADATA_KEY = "macros";
 
 	public static boolean confirm(String confirmation, CommandSender confirmee) {
 		return closeCommand(confirmation, confirmee, true);
@@ -37,12 +39,17 @@ public class Utilities {
 	public static MacroSet getMacroSet(Player player) {
 		MacroSet macros;
 		try {
-			macros = (MacroSet) player.getMetadata("macros").get(0);
+			macros = (MacroSet) player.getMetadata(METADATA_KEY).get(0);
 		} catch (IndexOutOfBoundsException e) {
 			macros = new MacroSet();
-			player.setMetadata("macros", macros);
+			player.setMetadata(METADATA_KEY, macros);
 		}
 		return macros;
+	}
+	
+	public static void setMacroSet(Player player, MacroSet macroSet) {
+		player.removeMetadata(METADATA_KEY, Main.main);
+		player.setMetadata(METADATA_KEY, macroSet);
 	}
 
 	public static List<String> getMacro(String name, Player player) {
@@ -62,4 +69,5 @@ public class Utilities {
 		}
 		return Arrays.asList(joined.split(delimiter));
 	}
+	
 }

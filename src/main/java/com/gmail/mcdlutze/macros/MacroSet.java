@@ -7,8 +7,9 @@ import java.util.List;
 import org.bukkit.metadata.MetadataValue;
 import org.bukkit.plugin.Plugin;
 
-@SuppressWarnings("serial")
 public class MacroSet extends HashMap<String, List<String>> implements MetadataValue {
+
+	private static final long serialVersionUID = -6271478335621885519L;
 
 	public boolean asBoolean() {
 		return isEmpty();
@@ -56,8 +57,6 @@ public class MacroSet extends HashMap<String, List<String>> implements MetadataV
 	}
 
 	public void invalidate() {
-		// TODO Auto-generated method stub
-
 	}
 
 	public Object value() {

@@ -3,20 +3,23 @@ package com.gmail.mcdlutze.macros;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
 
 import com.gmail.mcdlutze.macros.Utilities;
 
-public class MacroExecutor implements CommandExecutor {
+public class MacroExecutor implements CommandExecutor, TabCompleter {
 
 	private String[] helpTemplates = { "help {sub-command}", "new {macro name} {text}", "add {macro name} [{text}]",
 			"remove {macro name}", "list", "view {macro name}", "run {macro name} [{arguments}]" };
+
+	private String[] searchCommands = { "add", "remove", "run", "view" };
 
 	private Map<String, String> helpNotes = new HashMap<String, String>();
 
@@ -37,6 +40,13 @@ public class MacroExecutor implements CommandExecutor {
 			player = (Player) sender;
 		} else {
 			return Utilities.deny("This command can only be executed by a player", sender);
+		}
+		
+		if (label.equalsIgnoreCase("mr")) {
+			String[] temp = new String[args.length+1];
+			System.arraycopy(args, 0, temp, 1, args.length);
+			temp[0] = "run";
+			args = temp;
 		}
 
 		if (args.length == 0) {
@@ -122,7 +132,7 @@ public class MacroExecutor implements CommandExecutor {
 				List<String> lines = Utilities.fillTemplate(template, getArgList(args));
 
 				for (String line : lines) {
-					if (line.toLowerCase().startsWith("/macro")) {
+					if (line.toLowerCase().startsWith("/macro ") || line.toLowerCase().startsWith("/mr ")) {
 						return Utilities.confirm("You cannot call a macro from a macro.", player);
 					}
 				}
@@ -162,5 +172,42 @@ public class MacroExecutor implements CommandExecutor {
 			return new ArrayList<String>(0);
 		}
 		return Arrays.asList(args).subList(2, args.length);
+	}
+
+	public List<String> onTabComplete(CommandSender sender, Command command, String label, String[] args) {
+		
+		Player player = (Player) sender;
+		
+		if (label.equalsIgnoreCase("mr")) {
+			String[] temp = new String[args.length+1];
+			System.arraycopy(args, 0, temp, 1, args.length);
+			temp[0] = "run";
+			args = temp;
+		}
+		
+		List<String> list = new LinkedList<String>();
+		String subCommand = "";
+		if (args.length >= 1) {
+			subCommand = args[0];
+		}
+		if (args.length <= 1) {
+			for (String key : helpNotes.keySet()) {
+				if (key.startsWith(subCommand)) {
+					list.add(key);
+				}
+			}
+			return list;
+		}
+		if (args.length == 2) {
+			for (String sc : searchCommands) {
+				if (sc.equalsIgnoreCase(subCommand)) {
+					for (String macro : Utilities.getMacroSet(player).keySet()) {
+						list.add(macro);
+					}
+					return list;
+				}
+			}
+		}
+		return list;
 	}
 }
