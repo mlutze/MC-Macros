@@ -6,8 +6,6 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.regex.Pattern;
-
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -178,6 +176,13 @@ public class MacroExecutor implements CommandExecutor, TabCompleter {
 		
 		Player player = (Player) sender;
 		
+		if (label.equalsIgnoreCase("mr")) {
+			String[] temp = new String[args.length+1];
+			System.arraycopy(args, 0, temp, 1, args.length);
+			temp[0] = "run";
+			args = temp;
+		}
+		
 		List<String> list = new LinkedList<String>();
 		String subCommand = "";
 		if (args.length >= 1) {
@@ -201,6 +206,6 @@ public class MacroExecutor implements CommandExecutor, TabCompleter {
 				}
 			}
 		}
-		return null;
+		return list;
 	}
 }
