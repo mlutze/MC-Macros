@@ -16,7 +16,7 @@ import com.gmail.mcdlutze.macros.Utilities;
 
 public class MacroExecutor implements CommandExecutor, TabCompleter {
 
-	private String[] helpTemplates = { "help {sub-command}", "new {macro name} {text}", "add {macro name} [{text}]",
+	private String[] helpTemplates = { "help [{sub-command}]", "new {macro name} [{text}]", "add {macro name} {text}",
 			"remove {macro name}", "list", "view {macro name}", "run {macro name} [{arguments}]" };
 
 	private String[] searchCommands = { "add", "remove", "run", "view" };
