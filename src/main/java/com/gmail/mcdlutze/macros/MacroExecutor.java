@@ -139,7 +139,7 @@ public class MacroExecutor implements CommandExecutor, TabCompleter {
 
 			if (macros.containsKey(macroName)) {
 				String text = getText(subCommand, args);
-				macros.editLine(macroName, line, text);
+				line = macros.editLine(macroName, line, text);
 				if (text.isEmpty()) {
 					return Utilities.confirm(String.format("Line %d deleted in macro \"%s\".", line, macroName), player);
 				} else {
