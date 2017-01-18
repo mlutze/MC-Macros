@@ -77,16 +77,14 @@ public class MacroSet extends HashMap<String, List<String>>implements MetadataVa
 	}
 
 	public void editLine(String macro, int line, String edit) {
-		List<String> lines = get(macro);
-		if (edit.isEmpty()) {
-			lines.remove(line);
-
-		} else {
-			lines.set(line, edit);
-		}
+		get(macro).set(line, edit);
 	}
 
 	public void insertLine(String macro, int line, String text) {
 		get(macro).add(line, text);
+	}
+
+	public void removeLine(String macro, int line) {
+		get(macro).remove(line);
 	}
 }

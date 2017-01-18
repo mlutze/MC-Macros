@@ -17,10 +17,10 @@ import com.gmail.mcdlutze.macros.Utilities;
 public class MacroExecutor implements CommandExecutor, TabCompleter {
 
 	private String[] helpTemplates = { "help [{sub-command}]", "new {macro name} [{text}]", "add {macro name} {text}",
-			"edit {macro name} {line} {text}", "insert {macro name} {line} {text}", "delete {macro name}", "list",
-			"view {macro name}", "run {macro name} [{arguments}]" };
+			"edit {macro name} {line} {text}", "insert {macro name} {line} {text}", "remove {macro name} {line}",
+			"delete {macro name}", "list", "view {macro name}", "run {macro name} [{arguments}]" };
 
-	private String[] searchCommands = { "add", "edit", "delete", "insert", "run", "view" };
+	private String[] searchCommands = { "add", "edit", "delete", "insert", "remove", "run", "view" };
 
 	private Map<String, String> helpNotes = new HashMap<String, String>();
 	private Map<String, Integer> textStart = new HashMap<String, Integer>();
@@ -35,6 +35,7 @@ public class MacroExecutor implements CommandExecutor, TabCompleter {
 		helpNotes.put("list", "List your macros.");
 		helpNotes.put("edit", "Edit an existing macro.");
 		helpNotes.put("insert", "Insert a line into a macro.");
+		helpNotes.put("remove", "Remove a line from a macro.");
 
 		textStart.put("add", 2);
 		textStart.put("new", 2);
@@ -190,6 +191,34 @@ public class MacroExecutor implements CommandExecutor, TabCompleter {
 			}
 		}
 
+		if (subCommand.equals("remove")) {
+			if (args.length < 3) {
+				return false;
+			}
+			int line;
+			try {
+				line = Integer.parseInt(args[2]);
+				if (line < 0) {
+					throw new NumberFormatException();
+				}
+			} catch (NumberFormatException e) {
+				return false;
+			}
+
+			if (macros.containsKey(macroName)) {
+				try {
+					macros.removeLine(macroName, line);
+				} catch (IndexOutOfBoundsException e) {
+					return Utilities.deny(String.format("Macro \"%s\" does not have line %d.", macroName, line),
+							player);
+				}
+				return Utilities.confirm(String.format("Line %d removed from macro \"%s\".", line, macroName), player);
+
+			} else {
+				return denyExistence(macroName, player);
+			}
+		}
+
 		if (subCommand.equals("delete")) {
 			if (macros.containsKey(macroName)) {
 				macros.remove(macroName);
@@ -209,8 +238,7 @@ public class MacroExecutor implements CommandExecutor, TabCompleter {
 					return Utilities.confirm("Error: unmatched quotation mark in argument list.", player);
 				}
 				List<String> lines = Utilities.fillTemplate(template, macroArgs);
-				for (String line : lines)
-				{
+				for (String line : lines) {
 					if (line.toLowerCase().startsWith("/macro ") || line.toLowerCase().startsWith("/mr ")) {
 						return Utilities.confirm("You cannot call a macro from a macro.", player);
 					}
@@ -311,6 +339,28 @@ public class MacroExecutor implements CommandExecutor, TabCompleter {
 					} catch (NumberFormatException e) {
 						// swallow
 					}
+				}
+			}
+		}
+		if (subCommand.equals("insert")) {
+			List<String> macroLines = Utilities.getMacro(args[1], player);
+			if (macroLines != null) {
+				if (args.length == 3) {
+					for (int i = 0; i <= macroLines.size(); i++) {
+						list.add(String.format("%d", i));
+					}
+					return list;
+				}
+			}
+		}
+		if (subCommand.equals("remove")) {
+			List<String> macroLines = Utilities.getMacro(args[1], player);
+			if (macroLines != null) {
+				if (args.length == 3) {
+					for (int i = 0; i < macroLines.size(); i++) {
+						list.add(String.format("%d", i));
+					}
+					return list;
 				}
 			}
 		}
