@@ -7,7 +7,7 @@ import java.util.List;
 import org.bukkit.metadata.MetadataValue;
 import org.bukkit.plugin.Plugin;
 
-public class MacroSet extends HashMap<String, List<String>> implements MetadataValue {
+public class MacroSet extends HashMap<String, List<String>>implements MetadataValue {
 
 	private static final long serialVersionUID = -6271478335621885519L;
 
@@ -75,16 +75,19 @@ public class MacroSet extends HashMap<String, List<String>> implements MetadataV
 	public void addLine(String macro, String line) {
 		get(macro).add(line);
 	}
-	
+
 	public void editLine(String macro, int line, String edit) {
 		List<String> lines = get(macro);
-		line = Math.min(line, lines.size());
 		if (edit.isEmpty()) {
 			if (line < lines.size()) {
-				get(macro).remove(line);
+				lines.remove(line);
 			}
 		} else {
-			get(macro).set(line, edit);
+			if (line < lines.size()) {
+				lines.set(line, edit);
+			} else {
+				lines.add(edit);
+			}
 		}
 	}
 }
