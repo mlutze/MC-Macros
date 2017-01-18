@@ -129,7 +129,13 @@ public class MacroExecutor implements CommandExecutor, TabCompleter {
 
 			if (macros.containsKey(macroName)) {
 				List<String> template = macros.get(macroName);
-				List<String> lines = Utilities.fillTemplate(template, getArgList(args));
+				List<String> macroArgs;
+				try {
+					macroArgs = Utilities.combineQuotedArgs(getArgList(args));
+				} catch (IllegalArgumentException e) {
+					return Utilities.confirm("Error: unmatched quotation mark in argument list.", player);
+				}
+				List<String> lines = Utilities.fillTemplate(template, macroArgs);
 
 				for (String line : lines) {
 					if (line.toLowerCase().startsWith("/macro ") || line.toLowerCase().startsWith("/mr ")) {
