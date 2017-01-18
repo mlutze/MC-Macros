@@ -17,7 +17,14 @@ The plugin technically only includes one command (as well as one shortcut), but 
   - Create a new macro with the given name and optional first line.
 - `/macro add {macro name} {text}`
   - Add the given line to the given macro.
-- `/macro remove {macro name}`
+- `/macro edit {macro name} {line} {text}`
+  - Replace the line in the macro with the given text.
+  - Hitting tab after the line variable will automatically fill the chatbar with the line text.
+- `/macro insert {macro name} {line} {text}`
+  - Insert the given line into the macro.
+- `/macro remove {macro name} {line}`
+  - Remove the given line from the macro.
+- `/macro delete {macro name}`
   - Delete the given macro.
 - `/macro list`
   - List your macros.
@@ -50,11 +57,13 @@ This is the first test of the test macro.
 /macro add joke {0} is now an operator!
 /macro add joke /deop {0}
 /macro add joke {0} is no longer an operator!
+/macro insert joke 0 {1}
 /macro add joke {1}
 /mr joke Briefly_Elated HAHAHA
 ```
 ###### Output:
 ```
+HAHAHA
 /op Briefly_Elated
 Briefly_Elated is now an operator!
 /deop Briefly_Elated
