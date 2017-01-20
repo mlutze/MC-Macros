@@ -18,9 +18,10 @@ public class MacroExecutor implements CommandExecutor, TabCompleter {
 
 	private String[] helpTemplates = { "help [{sub-command}]", "new {macro name} [{text}]", "add {macro name} {text}",
 			"edit {macro name} {line} {text}", "insert {macro name} {line} {text}", "remove {macro name} {line}",
-			"delete {macro name}", "list", "view {macro name}", "run {macro name} [{arguments}]" };
+			"delete {macro name}", "rename {old name} {new name}", "copy {macro name}, {copy name}", "list",
+			"view {macro name}", "run {macro name} [{arguments}]" };
 
-	private String[] searchCommands = { "add", "edit", "delete", "insert", "remove", "run", "view" };
+	private String[] searchCommands = { "add", "copy", "edit", "delete", "insert", "remove", "rename", "run", "view" };
 
 	private Map<String, String> helpNotes = new HashMap<String, String>();
 	private Map<String, Integer> textStart = new HashMap<String, Integer>();
@@ -36,6 +37,8 @@ public class MacroExecutor implements CommandExecutor, TabCompleter {
 		helpNotes.put("edit", "Edit an existing macro.");
 		helpNotes.put("insert", "Insert a line into a macro.");
 		helpNotes.put("remove", "Remove a line from a macro.");
+		helpNotes.put("rename", "Rename a macro.");
+		helpNotes.put("copy", "Copy a macro.");
 
 		textStart.put("add", 2);
 		textStart.put("new", 2);
@@ -52,6 +55,7 @@ public class MacroExecutor implements CommandExecutor, TabCompleter {
 			return Utilities.deny("This command can only be executed by a player", sender);
 		}
 
+		// handle shortcut
 		if (label.equalsIgnoreCase("mr")) {
 			String[] temp = new String[args.length + 1];
 			System.arraycopy(args, 0, temp, 1, args.length);
@@ -59,12 +63,13 @@ public class MacroExecutor implements CommandExecutor, TabCompleter {
 			args = temp;
 		}
 
+		// ensure there is a sub-command and generify it
 		if (args.length == 0) {
 			return false;
 		}
-
 		String subCommand = args[0].toLowerCase();
 
+		// first handle sub-commands with no arguments
 		if (subCommand.equals("help")) {
 			if (args.length == 1) {
 				for (String template : helpTemplates) {
@@ -93,6 +98,7 @@ public class MacroExecutor implements CommandExecutor, TabCompleter {
 			return true;
 		}
 
+		// ensure there is at least one argument
 		if (args.length < 2) {
 			return false;
 		}
@@ -223,6 +229,30 @@ public class MacroExecutor implements CommandExecutor, TabCompleter {
 			if (macros.containsKey(macroName)) {
 				macros.remove(macroName);
 				return Utilities.confirm(String.format("Macro \"%s\" deleted.", macroName), player);
+			} else {
+				return denyExistence(macroName, player);
+			}
+		}
+		
+		if (subCommand.equals("rename")) {
+			if (args.length < 3) {
+				return false;
+			}
+			if (macros.containsKey(macroName)) {
+				macros.rename(macroName, args[2]);
+				return Utilities.confirm(String.format("Macro \"%s\" renamed to \"%s\".", macroName, args[2]), player);
+			} else {
+				return denyExistence(macroName, player);
+			}
+		}
+		
+		if (subCommand.equals("copy")) {
+			if (args.length < 3) {
+				return false;
+			}
+			if (macros.containsKey(macroName)) {
+				macros.copy(macroName, args[2]);
+				return Utilities.confirm(String.format("Macro \"%s\" copied to \"%s\".", macroName, args[2]), player);
 			} else {
 				return denyExistence(macroName, player);
 			}
