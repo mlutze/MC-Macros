@@ -108,7 +108,7 @@ public class MacroExecutor implements CommandExecutor, TabCompleter {
 		if (subCommand.equals("new")) {
 
 			if (macros.containsKey(macroName)) {
-				return Utilities.deny(String.format("A macro with the name \"%s\" already exists.", macroName), player);
+				return assertExistence(macroName, player);
 			}
 
 			if (args.length == 2) {
@@ -233,24 +233,30 @@ public class MacroExecutor implements CommandExecutor, TabCompleter {
 				return denyExistence(macroName, player);
 			}
 		}
-		
+
 		if (subCommand.equals("rename")) {
 			if (args.length < 3) {
 				return false;
 			}
 			if (macros.containsKey(macroName)) {
+				if (macros.containsKey(args[2])) {
+					return assertExistence(args[2], player);
+				}
 				macros.rename(macroName, args[2]);
 				return Utilities.confirm(String.format("Macro \"%s\" renamed to \"%s\".", macroName, args[2]), player);
 			} else {
 				return denyExistence(macroName, player);
 			}
 		}
-		
+
 		if (subCommand.equals("copy")) {
 			if (args.length < 3) {
 				return false;
 			}
 			if (macros.containsKey(macroName)) {
+				if (macros.containsKey(args[2])) {
+					return assertExistence(args[2], player);
+				}
 				macros.copy(macroName, args[2]);
 				return Utilities.confirm(String.format("Macro \"%s\" copied to \"%s\".", macroName, args[2]), player);
 			} else {
@@ -302,6 +308,10 @@ public class MacroExecutor implements CommandExecutor, TabCompleter {
 
 	private boolean denyExistence(String name, Player player) {
 		return Utilities.deny(String.format("The macro \"%s\" does not exist.", name), player);
+	}
+	
+	private boolean assertExistence(String name, Player player) {
+		return Utilities.deny(String.format("A macro with the name \"%s\" already exists.", name), player);
 	}
 
 	private List<String> getArgs(String[] args) {
