@@ -1,5 +1,6 @@
 package com.gmail.mcdlutze.macros;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -86,5 +87,13 @@ public class MacroSet extends HashMap<String, List<String>>implements MetadataVa
 
 	public void removeLine(String macro, int line) {
 		get(macro).remove(line);
+	}
+
+	public void rename(String oldName, String newName) {
+		put(newName, remove(oldName));
+	}
+	
+	public void copy(String macro, String newName) {
+		put(newName, new ArrayList<String>(get(macro)));
 	}
 }

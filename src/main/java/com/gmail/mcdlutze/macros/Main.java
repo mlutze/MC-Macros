@@ -1,12 +1,16 @@
 package com.gmail.mcdlutze.macros;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.bukkit.command.PluginCommand;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.player.AsyncPlayerChatEvent;
+import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -14,6 +18,8 @@ import org.bukkit.plugin.java.JavaPlugin;
 public class Main extends JavaPlugin {
 
 	static Main main;
+	
+	Map<Player, String> dictators = new HashMap<Player, String>();
 	
 	private Listener playerJoinListener = new Listener() {
 		@EventHandler
@@ -25,7 +31,33 @@ public class Main extends JavaPlugin {
 	private Listener playerQuitListener = new Listener() {
 		@EventHandler
 		public void onPlayerQuit(PlayerQuitEvent e) {
+			dictators.remove(e.getPlayer());
 			saveMacros(e.getPlayer());
+		}
+	};
+	
+	private Listener dictationListener = new Listener() {
+		@EventHandler
+		public void onPlayerCommand(PlayerCommandPreprocessEvent e) {
+			Player player = e.getPlayer();
+			if (dictators.containsKey(player)) {
+				if (e.getMessage().equals("//")) {
+					dictators.remove(player);
+				} else {
+					String macro = dictators.get(player);
+					Utilities.getMacro(macro, player).add(e.getMessage());
+				}
+				e.setCancelled(true);
+			}
+		}
+		@EventHandler
+		public void onPlayerChat(AsyncPlayerChatEvent e) {
+			Player player = e.getPlayer();
+			if (dictators.containsKey(player)) {
+				String macro = dictators.get(player);
+				Utilities.getMacro(macro, player).add(e.getMessage());
+				e.setCancelled(true);
+			}
 		}
 	};
 
@@ -38,6 +70,7 @@ public class Main extends JavaPlugin {
 		pluginCommand.setTabCompleter(macroExecutor);
 		getServer().getPluginManager().registerEvents(playerJoinListener, main);
 		getServer().getPluginManager().registerEvents(playerQuitListener, main);
+		getServer().getPluginManager().registerEvents(dictationListener, main);
 	}
 
 	@Override
