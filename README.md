@@ -30,7 +30,7 @@ The plugin technically only includes one command (as well as one shortcut), but 
   - Rename the given macro with the given new name.
 - `/macro copy {macro name} {copy name}`
   - Copy the given macro to a new macro with the given name.
-- `/macro dictate {macro name}
+- `/macro dictate {macro name}`
   - Create a new macro with the given name and enter dicatation mode.
   - While in dictation mode, any commands or messages typed will be captured and added to the macro.
   - Type `//` to exit dictation mode.
