@@ -26,6 +26,14 @@ The plugin technically only includes one command (as well as one shortcut), but 
   - Remove the given line from the macro.
 - `/macro delete {macro name}`
   - Delete the given macro.
+- `/macro rename {old name} {new name}`
+  - Rename the given macro with the given new name.
+- `/macro copy {macro name} {copy name}`
+  - Copy the given macro to a new macro with the given name.
+- `/macro dictate {macro name}
+  - Create a new macro with the given name and enter dicatation mode.
+  - While in dictation mode, any commands or messages typed will be captured and added to the macro.
+  - Type `//` to exit dictation mode.
 - `/macro list`
   - List your macros.
 - `/macro view {macro name}`
@@ -69,4 +77,27 @@ Briefly_Elated is now an operator!
 /deop Briefly_Elated
 Briefly_Elated is no longer an operator!
 HAHAHA
+```
+
+###### Input:
+```
+/macro dictate dictation
+Hello, everyone.
+I am currently dictating.
+No one can see this until I run the macro.
+/deop {0}
+That command will not execute until I run the macro.
+Sorry, {0}.
+//
+/mr dictation Sad_Larry
+```
+
+###### Output:
+```
+Hello, everyone.
+I am currently dictating.
+No one can see this until I run the macro.
+/deop Sad_Larry
+That command will not execute until I run the macro.
+Sorry, Sad_Larry.
 ```
