@@ -18,8 +18,8 @@ public class MacroExecutor implements CommandExecutor, TabCompleter {
 
 	private String[] helpTemplates = { "help [{sub-command}]", "new {macro name} [{text}]", "add {macro name} {text}",
 			"edit {macro name} {line} {text}", "insert {macro name} {line} {text}", "remove {macro name} {line}",
-			"delete {macro name}", "rename {old name} {new name}", "copy {macro name}, {copy name}", "list",
-			"view {macro name}", "run {macro name} [{arguments}]" };
+			"delete {macro name}", "rename {old name} {new name}", "copy {macro name}, {copy name}",
+			"dictate {macro name}", "list", "view {macro name}", "run {macro name} [{arguments}]" };
 
 	private String[] searchCommands = { "add", "copy", "edit", "delete", "insert", "remove", "rename", "run", "view" };
 
@@ -39,6 +39,7 @@ public class MacroExecutor implements CommandExecutor, TabCompleter {
 		helpNotes.put("remove", "Remove a line from a macro.");
 		helpNotes.put("rename", "Rename a macro.");
 		helpNotes.put("copy", "Copy a macro.");
+		helpNotes.put("dictate", "Begin recording a new macro through chat.");
 
 		textStart.put("add", 2);
 		textStart.put("new", 2);
@@ -263,6 +264,16 @@ public class MacroExecutor implements CommandExecutor, TabCompleter {
 				return denyExistence(macroName, player);
 			}
 		}
+		
+		if (subCommand.equals("dictate")) {
+			if (macros.containsKey(macroName)) {
+				return assertExistence(macroName, player);
+			}
+			macros.newMacro(macroName);
+			Main.main.dictators.put(player, macroName);
+			player.sendMessage(String.format("Dictating new macro \"%s\".", macroName));
+			return Utilities.confirm("Type \"//\" to end dictation.", player);
+		}
 
 		if (subCommand.equals("run")) {
 			if (macros.containsKey(macroName)) {
@@ -309,7 +320,7 @@ public class MacroExecutor implements CommandExecutor, TabCompleter {
 	private boolean denyExistence(String name, Player player) {
 		return Utilities.deny(String.format("The macro \"%s\" does not exist.", name), player);
 	}
-	
+
 	private boolean assertExistence(String name, Player player) {
 		return Utilities.deny(String.format("A macro with the name \"%s\" already exists.", name), player);
 	}
