@@ -1,13 +1,14 @@
 # Minecraft Macros
 
-##### A simple Bukkit plugin for minecraft chat macros
-
+##### A simple Bukkit plugin for Minecraft chat macros
 
 ## Overview
+### TODO: mention custom commands (hard macros)
 
 It is not uncommon for a player to want to be able to send the same message or command, or set of messages or commands, rather frequently. This plugin allows for the creation of macros, short commands that send longer chains of messages or commands automatically.
 
 ## Commands
+### TODO: update section
 
 The plugin technically only includes one command (as well as one shortcut), but has several sub-commands:
 
@@ -46,7 +47,11 @@ The plugin technically only includes one command (as well as one shortcut), but 
 
 The macros you create can allow for arguments for versitility. Any text in the macro of the form `{n}`, where `n` is an integer, will be replaced by the text given in the corresponding argument when the macro is run.
 
+## Dictation
+### TODO: fill this section
+
 ## Example Usage
+### TODO: update section
 
 ###### Input:
 ```
@@ -69,6 +74,7 @@ This is the first test of the test macro.
 /macro add joke {1}
 /mr joke Briefly_Elated HAHAHA
 ```
+
 ###### Output:
 ```
 HAHAHA
