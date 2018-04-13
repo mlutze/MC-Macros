@@ -1,16 +1,72 @@
 name: Macros
 main: com.gmail.mcdlutze.macros.Main
-version: 1.3
+version: 2.0.0
 author: Matt
 description: A plugin for creating macros.
+
 commands:
-   macro:
-      description: Create, modify, or run a macro.
-      aliases: mr
-      usage: /macro help
+   macroadd:
+      description: Add an line to a macro. Use "{number}" to allow arguments.
+      aliases: madd
+      usage: /macroadd {macro name} {text}
       permission: Macros.user
-      permission-message: You don't have permission to use macros.
-      
+   macrocopy:
+      description: Copy a macro.
+      aliases: mcopy
+      usage: /macrocopy {macro name}, {copy name}
+      permission: Macros.user
+   macrodelete:
+      description: Delete a macro.
+      aliases: mdelete
+      usage: /macrodelete {macro name}
+      permission: Macros.user
+   macrodictate:
+      description: Begin recording a new macro through chat.
+      aliases: mdictate
+      usage: /macrodictate {macro name}
+      permission: Macros.user
+   macroedit:
+      description: Edit a line in a macro.
+      aliases: medit
+      usage: /macroedit {macro name} {line} {text}
+      permission: Macros.user
+   macroinsert:
+      description: Insert a line into a macro.
+      aliases: minsert
+      usage: /macroinsert {macro name} {line} {text}
+      permission: Macros.user
+   macrolist:
+      description: List your macros.
+      aliases: mlist
+      usage: /macrolist
+      permission: Macros.user
+   macronew:
+      description: Create a new macro.
+      aliases: mnew
+      usage: /macronew {macro name} [{text}]
+      permission: Macros.user
+   macroremove:
+      description: Remove a line from a macro.
+      aliases: mremove
+      usage: /macroremove {macro name} {line}
+      permission: Macros.user
+   macrorename:
+      description: Rename a macro.
+      aliases: mrename
+      usage: /macrorename {macro name} {new name}
+      permission: Macros.user
+   macrorun:
+      description: Run a macro.
+      aliases: mrun
+      usage: /macrorun {macro name} [{arguments}]
+      permission: Macros.user
+   macroview:
+      description: View the contents of a macro.
+      aliases: mview
+      usage: /macroview {macro name} [{arguments}]
+      permission: Macros.user
+# TODO add harden & soften commands
+
 permissions:
    Macros.user:
       description: Allows use of macros.

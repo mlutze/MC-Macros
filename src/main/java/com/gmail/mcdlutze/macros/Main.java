@@ -1,112 +1,76 @@
 package com.gmail.mcdlutze.macros;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
+import com.gmail.mcdlutze.macros.commandexecutor.*;
+import com.gmail.mcdlutze.macros.listener.DictationListener;
+import com.gmail.mcdlutze.macros.listener.MacroPersistenceListener;
+import com.gmail.mcdlutze.macros.manager.ConfigurationManager;
+import com.gmail.mcdlutze.macros.manager.DictatorManager;
+import com.gmail.mcdlutze.macros.manager.MacroRunnerManager;
+import com.gmail.mcdlutze.macros.manager.MacroSetManager;
+import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.PluginCommand;
-import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
-import org.bukkit.event.player.AsyncPlayerChatEvent;
-import org.bukkit.event.player.PlayerCommandPreprocessEvent;
-import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.command.TabCompleter;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class Main extends JavaPlugin {
 
-	static Main main;
-	
-	Map<Player, String> dictators = new HashMap<Player, String>();
-	
-	private Listener playerJoinListener = new Listener() {
-		@EventHandler
-		public void onPlayerJoin(PlayerJoinEvent e) {
-			loadMacros(e.getPlayer());
-		}
-	};
-	
-	private Listener playerQuitListener = new Listener() {
-		@EventHandler
-		public void onPlayerQuit(PlayerQuitEvent e) {
-			dictators.remove(e.getPlayer());
-			saveMacros(e.getPlayer());
-		}
-	};
-	
-	private Listener dictationListener = new Listener() {
-		@EventHandler
-		public void onPlayerCommand(PlayerCommandPreprocessEvent e) {
-			Player player = e.getPlayer();
-			if (dictators.containsKey(player)) {
-				if (e.getMessage().equals("//")) {
-					dictators.remove(player);
-				} else {
-					String macro = dictators.get(player);
-					Utilities.getMacro(macro, player).add(e.getMessage());
-				}
-				e.setCancelled(true);
-			}
-		}
-		@EventHandler
-		public void onPlayerChat(AsyncPlayerChatEvent e) {
-			Player player = e.getPlayer();
-			if (dictators.containsKey(player)) {
-				String macro = dictators.get(player);
-				Utilities.getMacro(macro, player).add(e.getMessage());
-				e.setCancelled(true);
-			}
-		}
-	};
+    // managers
+    private ConfigurationManager configurationManager;
+    private MacroSetManager macroSetManager;
+    private DictatorManager dictatorManager;
+    private MacroRunnerManager macroRunnerManager;
 
-	@Override
-	public void onEnable() {
-		main = this;
-		PluginCommand pluginCommand = getCommand("macro");
-		MacroExecutor macroExecutor = new MacroExecutor();
-		pluginCommand.setExecutor(macroExecutor);
-		pluginCommand.setTabCompleter(macroExecutor);
-		getServer().getPluginManager().registerEvents(playerJoinListener, main);
-		getServer().getPluginManager().registerEvents(playerQuitListener, main);
-		getServer().getPluginManager().registerEvents(dictationListener, main);
-	}
+    // listeners
+    private DictationListener dictationListener;
+    private MacroPersistenceListener macroPersistenceListener;
+    // TODO add hard listener
 
-	@Override
-	public void onDisable() {
-		saveMacros();
-	}
+    @Override
+    public void onEnable() {
+        loadManagers();
+        loadListeners();
+        loadCommands();
+    }
 
-	private void saveMacros() {
-		for (Player player : getServer().getOnlinePlayers()) {
-			saveMacros(player, false);
-		}
-		saveConfig();
-	}
+    @Override
+    public void onDisable() {
+        macroSetManager.writeMacros();
+    }
 
-	private void saveMacros(Player player, boolean write) {
-		MacroSet macroSet = Utilities.getMacroSet(player);
-		ConfigurationSection section = getConfig().createSection(player.getUniqueId().toString());
-		for (String macro : macroSet.keySet()) {
-			section.set(macro, (List<String>) macroSet.get(macro));
-		}
-		if (write) {
-			saveConfig();
-		}
-	}
-	
-	private void saveMacros(Player player) {
-		saveMacros(player, true);
-	}
+    private void loadManagers() {
+        configurationManager = new ConfigurationManager(this);
+        macroSetManager = new MacroSetManager(this, configurationManager);
+        dictatorManager = new DictatorManager();
+        macroRunnerManager = new MacroRunnerManager();
+    }
 
-	private void loadMacros(Player player) {
-		ConfigurationSection section = getConfig().getConfigurationSection(player.getUniqueId().toString());
-		MacroSet macroSet = new MacroSet();
-		for (String macro : section.getKeys(false)) {
-			macroSet.put(macro, section.getStringList(macro));
-		}
-		Utilities.setMacroSet(player, macroSet);
-	}
-	
+    private void loadListeners() {
+        macroPersistenceListener = new MacroPersistenceListener(macroSetManager);
+        dictationListener = new DictationListener(dictatorManager);
+
+        getServer().getPluginManager().registerEvents(macroPersistenceListener, this);
+        getServer().getPluginManager().registerEvents(dictationListener, this);
+    }
+
+    private void loadCommands() {
+        loadCommand("macroadd", new AddCommandExecutor(macroSetManager));
+        loadCommand("macrocopy", new CopyCommandExecutor(macroSetManager));
+        loadCommand("macrodelete", new DeleteCommandExecutor(macroSetManager));
+        loadCommand("macrodictate", new DictateCommandExecutor(macroSetManager, dictatorManager));
+        loadCommand("macroedit", new EditCommandExecutor(macroSetManager));
+        loadCommand("macroinsert", new InsertCommandExecutor(macroSetManager));
+        loadCommand("macrolist", new ListCommandExecutor(macroSetManager));
+        loadCommand("macronew", new NewCommandExecutor(macroSetManager));
+        loadCommand("macroremove", new RemoveCommandExecutor(macroSetManager));
+        loadCommand("macrorename", new RenameCommandExecutor(macroSetManager));
+        loadCommand("macrorun", new RunCommandExecutor(macroSetManager, macroRunnerManager));
+        loadCommand("macroview", new ViewCommandExecutor(macroSetManager));
+        // TODO add harden & soften
+    }
+
+    private <T extends CommandExecutor & TabCompleter> void loadCommand(String name, T commandExecutor) {
+        PluginCommand command = getCommand(name);
+        command.setExecutor(commandExecutor);
+        command.setTabCompleter(commandExecutor);
+    }
 }
