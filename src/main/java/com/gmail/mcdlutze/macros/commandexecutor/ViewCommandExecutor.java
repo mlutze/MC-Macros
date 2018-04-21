@@ -22,7 +22,7 @@ public class ViewCommandExecutor implements CommandExecutor, TabCompleter {
 
     public ViewCommandExecutor(MacroSetManager macroSetManager) {
         this.macroSetManager = macroSetManager;
-        this.argumentsParser = ArgumentsParser.newBuilder().withKnownMacroName().withText().build();
+        this.argumentsParser = ArgumentsParser.newBuilder().withKnownMacroName().withArguments().build();
         this.argumentsVerifier =
                 ArgumentsVerifier.newBuilder().withMacroSetManager(macroSetManager).requireKnownMacroName().build();
     }
@@ -40,7 +40,7 @@ public class ViewCommandExecutor implements CommandExecutor, TabCompleter {
 
         Player player = verifiedArguments.getPlayer().get();
         Macro macro = verifiedArguments.getKnownMacro().get();
-        String[] macroArgs = parsedArguments.getText().orElse("").split(" ");
+        String[] macroArgs = parsedArguments.getArguments().orElse(new String[]{});
 
         if (macro.length() == 0) {
             player.sendMessage("Macro is empty.");
@@ -48,7 +48,6 @@ public class ViewCommandExecutor implements CommandExecutor, TabCompleter {
             player.sendMessage(macro.getFilledLines(macroArgs).toArray(new String[0]));
         }
         return true;
-        // TODO display if macro is hard or soft
     }
 
     @Override

@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import static com.gmail.mcdlutze.macros.argument.ArgumentType.*;
@@ -39,11 +41,29 @@ public class ArgumentsParser {
                 case TEXT:
                     parsedArgs.withText(Arrays.stream(args).skip(i).collect(Collectors.joining(" ")));
                     break;
+                case ARGUMENTS:
+                    parsedArgs.withArguments(combineQuotedArguments(Arrays.copyOfRange(args, i, args.length)));
+                    break;
                 default:
                     break;
             }
         }
         return parsedArgs.build();
+    }
+
+    private String[] combineQuotedArguments(String[] args) {
+        String text = String.join(" ", args) + " ";
+        Pattern pattern = Pattern.compile("(?:\"(.*?)\" |(\\S+?) )");
+        Matcher matcher = pattern.matcher(text);
+        List<String> combinedArgs = new ArrayList<>(args.length);
+        while (matcher.find()) {
+            if (matcher.group(1) != null) {
+                combinedArgs.add(matcher.group(1));
+            } else {
+                combinedArgs.add(matcher.group(2));
+            }
+        }
+        return combinedArgs.toArray(new String[0]);
     }
 
     public static final class Builder {
@@ -69,6 +89,11 @@ public class ArgumentsParser {
 
         public Builder withText() {
             argumentTypes.add(TEXT);
+            return this;
+        }
+
+        public Builder withArguments() {
+            argumentTypes.add(ARGUMENTS);
             return this;
         }
 

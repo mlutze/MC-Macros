@@ -48,16 +48,16 @@ public class InsertCommandExecutorTest {
 
     @Test
     public void successfulEditTest() {
-        when(macroSet.containsMacro("macroName")).thenReturn(true);
-        when(macroSet.getMacro("macroName")).thenReturn(macro);
+        when(macroSet.containsMacro("myMacro")).thenReturn(true);
+        when(macroSet.getMacro("myMacro")).thenReturn(macro);
         when(macro.length()).thenReturn(1);
-        when(macro.getName()).thenReturn("macroName");
+        when(macro.getName()).thenReturn("myMacro");
 
-        String[] args = "macroName 0 text text text".split(" ");
+        String[] args = "myMacro 0 text text text".split(" ");
         sut.onCommand(player, command, "label", args);
 
         verify(macro).insertLine(0, "text text text");
-        verify(player).sendMessage("Line 0 inserted into macro \"macroName\".");
+        verify(player).sendMessage("Line 0 inserted into macro \"myMacro\".");
     }
 
     @Test
@@ -74,11 +74,11 @@ public class InsertCommandExecutorTest {
     @Test
     public void suggestLinesTest() {
         List<String> expected = Collections.singletonList("0");
-        when(macroSet.containsMacro("macroName")).thenReturn(true);
-        when(macroSet.getMacro("macroName")).thenReturn(macro);
+        when(macroSet.containsMacro("myMacro")).thenReturn(true);
+        when(macroSet.getMacro("myMacro")).thenReturn(macro);
         when(macro.length()).thenReturn(1);
 
-        String[] args = "macroName 1".split(" ");
+        String[] args = "myMacro 1".split(" ");
         List<String> actual = sut.onTabComplete(player, command, "label", args);
 
         assertEquals(expected, actual);
@@ -97,9 +97,9 @@ public class InsertCommandExecutorTest {
     @Test
     public void suggestNothingToInvalidMacroTest() {
         List<String> expected = Collections.emptyList();
-        when(macroSet.containsMacro("macroName")).thenReturn(false);
+        when(macroSet.containsMacro("myMacro")).thenReturn(false);
 
-        String[] args = "macroName 0".split(" ");
+        String[] args = "myMacro 0".split(" ");
         List<String> actual = sut.onTabComplete(player, command, "label", args);
 
         assertEquals(expected, actual);
@@ -108,11 +108,11 @@ public class InsertCommandExecutorTest {
     @Test
     public void suggestNothingToExtraArgumentsTest() {
         List<String> expected = Collections.emptyList();
-        when(macroSet.containsMacro("macroName")).thenReturn(true);
-        when(macroSet.getMacro("macroName")).thenReturn(macro);
+        when(macroSet.containsMacro("myMacro")).thenReturn(true);
+        when(macroSet.getMacro("myMacro")).thenReturn(macro);
         when(macro.length()).thenReturn(1);
 
-        String[] args = "macroName 0 text text".split(" ");
+        String[] args = "myMacro 0 text text".split(" ");
         List<String> actual = sut.onTabComplete(player, command, "label", args);
         assertEquals(expected, actual);
     }

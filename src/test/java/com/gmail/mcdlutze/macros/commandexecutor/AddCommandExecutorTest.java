@@ -48,15 +48,15 @@ public class AddCommandExecutorTest {
 
     @Test
     public void successfulAddTest() {
-        when(macroSet.containsMacro("macroName")).thenReturn(true);
-        when(macroSet.getMacro("macroName")).thenReturn(macro);
-        when(macro.getName()).thenReturn("macroName");
+        when(macroSet.containsMacro("myMacro")).thenReturn(true);
+        when(macroSet.getMacro("myMacro")).thenReturn(macro);
+        when(macro.getName()).thenReturn("myMacro");
 
-        String[] args = "macroName text text text".split(" ");
+        String[] args = "myMacro text text text".split(" ");
         sut.onCommand(player, command, "label", args);
 
         verify(macro).addLine("text text text");
-        verify(player).sendMessage("Line added to macro \"macroName\".");
+        verify(player).sendMessage("Line added to macro \"myMacro\".");
     }
 
     @Test
@@ -84,7 +84,7 @@ public class AddCommandExecutorTest {
     public void suggestNothingToExtraArgumentsTest() {
         List<String> expected = Collections.emptyList();
 
-        String[] args = "macroName text text text".split(" ");
+        String[] args = "myMacro text text text".split(" ");
         List<String> actual = sut.onTabComplete(player, command, "label", args);
         assertEquals(expected, actual);
     }

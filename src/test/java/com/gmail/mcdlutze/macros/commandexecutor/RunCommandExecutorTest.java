@@ -53,17 +53,17 @@ public class RunCommandExecutorTest {
     public void successfulRunTest() {
         String[] macroArgs = {"arg1", "arg2"};
 
-        when(macroSet.containsMacro("macroName")).thenReturn(true);
-        when(macroSet.getMacro("macroName")).thenReturn(macro);
-        when(macro.getName()).thenReturn("macroName");
+        when(macroSet.containsMacro("myMacro")).thenReturn(true);
+        when(macroSet.getMacro("myMacro")).thenReturn(macro);
+        when(macro.getName()).thenReturn("myMacro");
         when(macro.getFilledLines(macroArgs)).thenReturn(Arrays.asList("1st arg: arg1", "2nd arg: arg2 (more text)"));
         when(macroRunnerManager.isRunning(player)).thenReturn(false);
 
-        String[] args = "macroName arg1 arg2".split(" ");
+        String[] args = "myMacro arg1 arg2".split(" ");
         sut.onCommand(player, command, "label", args);
 
         verify(macroRunnerManager).startRunning(player);
-        verify(player).sendMessage("Running macro \"macroName\".");
+        verify(player).sendMessage("Running macro \"myMacro\".");
         verify(player).chat("1st arg: arg1");
         verify(player).chat("2nd arg: arg2 (more text)");
         verify(macroRunnerManager).stopRunning(player);
@@ -71,11 +71,11 @@ public class RunCommandExecutorTest {
 
     @Test
     public void macroRunningFailTest() {
-        when(macroSet.containsMacro("macroName")).thenReturn(true);
-        when(macroSet.getMacro("macroName")).thenReturn(macro);
+        when(macroSet.containsMacro("myMacro")).thenReturn(true);
+        when(macroSet.getMacro("myMacro")).thenReturn(macro);
         when(macroRunnerManager.isRunning(player)).thenReturn(true);
 
-        String[] args = "macroName".split(" ");
+        String[] args = "myMacro".split(" ");
         sut.onCommand(player, command, "label", args);
 
         verify(player).sendMessage("You cannot run a macro from a macro.");
@@ -107,7 +107,7 @@ public class RunCommandExecutorTest {
     public void suggestNothingToExtraArgumentsTest() {
         List<String> expected = Collections.emptyList();
 
-        String[] args = "macroName text text text".split(" ");
+        String[] args = "myMacro text text text".split(" ");
         List<String> actual = sut.onTabComplete(player, command, "label", args);
         assertEquals(expected, actual);
     }

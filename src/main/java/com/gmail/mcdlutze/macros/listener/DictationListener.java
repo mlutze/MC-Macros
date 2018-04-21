@@ -1,5 +1,6 @@
 package com.gmail.mcdlutze.macros.listener;
 
+import com.gmail.mcdlutze.macros.macro.Macro;
 import com.gmail.mcdlutze.macros.manager.DictatorManager;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
@@ -38,7 +39,9 @@ public class DictationListener implements Listener {
         if (message.equals("//")) {
             dictatorManager.stopDictating(player);
         } else {
-            dictatorManager.getMacroForPlayer(player).addLine(message);
+            Macro macro = dictatorManager.getMacroForPlayer(player);
+            macro.addLine(message);
+            player.sendMessage(String.format("Line added to macro \"%s\".", macro.getName()));
         }
     }
 

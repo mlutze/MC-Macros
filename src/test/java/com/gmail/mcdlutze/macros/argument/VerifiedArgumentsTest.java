@@ -5,6 +5,7 @@ import org.bukkit.entity.Player;
 import org.junit.Test;
 import org.mockito.Mock;
 
+import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 
 public class VerifiedArgumentsTest {
@@ -19,13 +20,15 @@ public class VerifiedArgumentsTest {
         sut = VerifiedArguments.newBuilder().withKnownMacro(VerifiedArgument.of(macro))
                 .withLineNumber(VerifiedArgument.of(1)).withPlayer(VerifiedArgument.of(player))
                 .withUnknownMacroName(VerifiedArgument.of("unknownMacroName"))
-                .withText(VerifiedArgument.of("this is text")).build();
+                .withText(VerifiedArgument.of("this is text")).withArguments(VerifiedArgument.of(new String[]{"arg"}))
+                .build();
 
         assertEquals(VerifiedArgument.of(macro), sut.getKnownMacro());
         assertEquals(VerifiedArgument.of(1), sut.getLineNumber());
         assertEquals(VerifiedArgument.of(player), sut.getPlayer());
         assertEquals(VerifiedArgument.of("unknownMacroName"), sut.getUnknownMacroName());
         assertEquals(VerifiedArgument.of("this is text"), sut.getText());
+        assertArrayEquals(new String[]{"arg"}, sut.getArguments().get());
     }
 
     @Test
@@ -37,6 +40,7 @@ public class VerifiedArgumentsTest {
         assertEquals(VerifiedArgument.absent(), sut.getPlayer());
         assertEquals(VerifiedArgument.absent(), sut.getLineNumber());
         assertEquals(VerifiedArgument.absent(), sut.getKnownMacro());
+        assertEquals(VerifiedArgument.absent(), sut.getArguments());
     }
 
 }

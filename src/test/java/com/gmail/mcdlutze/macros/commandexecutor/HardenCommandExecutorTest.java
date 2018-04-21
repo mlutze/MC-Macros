@@ -13,6 +13,7 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
@@ -20,10 +21,11 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
-public class ListCommandExecutorTest {
-
+public class HardenCommandExecutorTest {
 
     @Mock MacroSetManager macroSetManager;
+
+    private HardenCommandExecutor sut;
 
     @Mock CommandSender sender;
     @Mock Command command;
@@ -31,13 +33,11 @@ public class ListCommandExecutorTest {
     @Mock MacroSet macroSet;
     @Mock Macro macro;
 
-    private ListCommandExecutor sut;
 
     @Before
     public void setup() {
-        sut = new ListCommandExecutor(macroSetManager);
+        sut = new HardenCommandExecutor(macroSetManager);
         when(macroSetManager.getMacroSet(player)).thenReturn(macroSet);
-        when(macro.getName()).thenReturn("myMacro");
     }
 
     @Test
@@ -48,41 +48,45 @@ public class ListCommandExecutorTest {
     }
 
     @Test
-    public void noMacrosTest() {
-        when(macroSet.macros()).thenReturn(Collections.emptySet());
+    public void successfulHardenTest() {
+        when(macroSet.containsMacro("myMacro")).thenReturn(true);
+        when(macroSet.getMacro("myMacro")).thenReturn(macro);
+        when(macro.getName()).thenReturn("myMacro");
 
-        sut.onCommand(player, command, "label", new String[]{});
+        String[] args = "myMacro".split(" ");
+        sut.onCommand(player, command, "label", args);
 
-        verify(player).sendMessage("You do not have any macros.");
+        verify(macro).setHard(true);
+        verify(player).sendMessage("Macro \"myMacro\" hardened.");
     }
 
     @Test
-    public void successfulListTest() {
-        when(macroSet.macros()).thenReturn(Collections.singleton(macro));
-        when(macro.isHard()).thenReturn(false);
+    public void suggestMacrosTest() {
+        List<String> expected = Collections.singletonList("macro0");
+        when(macroSet.names()).thenReturn(new HashSet<>(expected));
 
-        sut.onCommand(player, command, "label", new String[]{});
-
-        verify(player).sendMessage(new String[]{"myMacro"});
-    }
-
-    @Test
-    public void successfulLabelHardTest() {
-        when(macroSet.macros()).thenReturn(Collections.singleton(macro));
-        when(macro.isHard()).thenReturn(true);
-
-        sut.onCommand(player, command, "label", new String[]{});
-
-        verify(player).sendMessage(new String[]{"myMacro [hard]"});
-    }
-
-    @Test
-    public void suggestNothingTest() {
-        List<String> expected = Collections.emptyList();
-
-        String[] args = "".split(" ");
+        String[] args = "m".split(" ");
         List<String> actual = sut.onTabComplete(player, command, "label", args);
 
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    public void suggestNothingToNonPlayerTest() {
+        List<String> expected = Collections.emptyList();
+
+        String[] args = "m".split(" ");
+        List<String> actual = sut.onTabComplete(sender, command, "label", args);
+
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    public void suggestNothingToExtraArgumentsTest() {
+        List<String> expected = Collections.emptyList();
+
+        String[] args = "myMacro text text text".split(" ");
+        List<String> actual = sut.onTabComplete(player, command, "label", args);
         assertEquals(expected, actual);
     }
 }

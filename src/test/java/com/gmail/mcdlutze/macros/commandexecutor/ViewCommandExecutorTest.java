@@ -52,12 +52,12 @@ public class ViewCommandExecutorTest {
     public void successfulViewTest() {
         String[] macroArgs = {"arg1", "arg2"};
 
-        when(macroSet.containsMacro("macroName")).thenReturn(true);
-        when(macroSet.getMacro("macroName")).thenReturn(macro);
+        when(macroSet.containsMacro("myMacro")).thenReturn(true);
+        when(macroSet.getMacro("myMacro")).thenReturn(macro);
         when(macro.length()).thenReturn(2);
         when(macro.getFilledLines(macroArgs)).thenReturn(Arrays.asList("1st arg: arg1", "2nd arg: arg2 (more text)"));
 
-        String[] args = "macroName arg1 arg2".split(" ");
+        String[] args = "myMacro arg1 arg2".split(" ");
         sut.onCommand(player, command, "label", args);
 
         verify(player).sendMessage(new String[]{"1st arg: arg1", "2nd arg: arg2 (more text)"});
@@ -65,11 +65,11 @@ public class ViewCommandExecutorTest {
 
     @Test
     public void emptyMacroTest() {
-        when(macroSet.containsMacro("macroName")).thenReturn(true);
-        when(macroSet.getMacro("macroName")).thenReturn(macro);
+        when(macroSet.containsMacro("myMacro")).thenReturn(true);
+        when(macroSet.getMacro("myMacro")).thenReturn(macro);
         when(macro.length()).thenReturn(0);
 
-        String[] args = "macroName".split(" ");
+        String[] args = "myMacro".split(" ");
         sut.onCommand(player, command, "label", args);
 
         verify(player).sendMessage("Macro is empty.");
@@ -100,7 +100,7 @@ public class ViewCommandExecutorTest {
     public void suggestNothingToExtraArgumentsTest() {
         List<String> expected = Collections.emptyList();
 
-        String[] args = "macroName text text text".split(" ");
+        String[] args = "myMacro text text text".split(" ");
         List<String> actual = sut.onTabComplete(player, command, "label", args);
         assertEquals(expected, actual);
     }

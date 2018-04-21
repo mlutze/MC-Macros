@@ -14,7 +14,7 @@ public class MacroTest {
 
     @Test
     public void successfulFillTest() {
-        sut = new Macro("macroName", Arrays.asList("1st arg: {0}", "2nd arg: {1} (more text)"));
+        sut = new Macro("myMacro", Arrays.asList("1st arg: {0}", "2nd arg: {1} (more text)"), false);
 
         String[] args = "arg1 arg2".split(" ");
 
@@ -26,7 +26,7 @@ public class MacroTest {
 
     @Test
     public void ignoreInvalidArgSpaceTest() {
-        sut = new Macro("macroName", Collections.singletonList("1st arg: {invalid}"));
+        sut = new Macro("myMacro", Collections.singletonList("1st arg: {invalid}"), false);
 
         String[] args = "arg1 arg2".split(" ");
 
@@ -38,7 +38,7 @@ public class MacroTest {
 
     @Test
     public void ignoreInvalidOverflowArgSpaceTest() {
-        sut = new Macro("macroName", Collections.singletonList("1st arg: {999999999999999}"));
+        sut = new Macro("myMacro", Collections.singletonList("1st arg: {999999999999999}"), false);
 
         String[] args = "arg1 arg2".split(" ");
 
@@ -50,7 +50,7 @@ public class MacroTest {
 
     @Test
     public void ignoreOutOfBoundsArgSpaceTest() {
-        sut = new Macro("macroName", Collections.singletonList("1st arg: {5}"));
+        sut = new Macro("myMacro", Collections.singletonList("1st arg: {5}"), false);
 
         String[] args = "arg1 arg2".split(" ");
 

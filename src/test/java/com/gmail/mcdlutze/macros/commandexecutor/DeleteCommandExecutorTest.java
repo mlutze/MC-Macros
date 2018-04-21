@@ -49,15 +49,15 @@ public class DeleteCommandExecutorTest {
 
     @Test
     public void successfulDeleteTest() {
-        when(macroSet.containsMacro("macroName")).thenReturn(true);
-        when(macroSet.getMacro("macroName")).thenReturn(macro);
-        when(macro.getName()).thenReturn("macroName");
+        when(macroSet.containsMacro("myMacro")).thenReturn(true);
+        when(macroSet.getMacro("myMacro")).thenReturn(macro);
+        when(macro.getName()).thenReturn("myMacro");
 
-        String[] args = "macroName".split(" ");
+        String[] args = "myMacro".split(" ");
         sut.onCommand(player, command, "label", args);
 
-        verify(macroSet).removeMacro("macroName");
-        verify(player).sendMessage("Macro \"macroName\" deleted.");
+        verify(macroSet).removeMacro("myMacro");
+        verify(player).sendMessage("Macro \"myMacro\" deleted.");
     }
 
     @Test
@@ -85,7 +85,7 @@ public class DeleteCommandExecutorTest {
     public void suggestNothingToExtraArgumentsTest() {
         List<String> expected = Collections.emptyList();
 
-        String[] args = "macroName text text text".split(" ");
+        String[] args = "myMacro text text text".split(" ");
         List<String> actual = sut.onTabComplete(player, command, "label", args);
         assertEquals(expected, actual);
     }

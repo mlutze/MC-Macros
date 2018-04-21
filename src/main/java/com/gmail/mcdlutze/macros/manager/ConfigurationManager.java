@@ -14,6 +14,7 @@ public class ConfigurationManager {
     private static final String MACROS_KEY = "MACROS";
     private static final String MACRO_NAME_KEY = "MACRO_NAME";
     private static final String MACRO_CONTENTS_KEY = "MACRO_CONTENTS";
+    private static final String MACRO_HARD_KEY = "MACRO_HARD";
 
     private final Plugin plugin;
 
@@ -60,15 +61,15 @@ public class ConfigurationManager {
     private Macro createMacroFromConfig(ConfigurationSection config) {
         String macroName = config.getString(MACRO_NAME_KEY);
         List<String> macroContents = config.getStringList(MACRO_CONTENTS_KEY);
-        return new Macro(macroName, macroContents);
-        // TODO add hard
+        boolean macroHard = config.getBoolean(MACRO_HARD_KEY);
+        return new Macro(macroName, macroContents, macroHard);
     }
 
     private void createConfigFromMacro(ConfigurationSection parent, Macro macro) {
         ConfigurationSection config = parent.createSection(macro.getName());
         config.set(MACRO_NAME_KEY, macro.getName());
         config.set(MACRO_CONTENTS_KEY, macro.getLines());
-        // TODO add hard
+        config.set(MACRO_HARD_KEY, macro.isHard());
     }
 
 }

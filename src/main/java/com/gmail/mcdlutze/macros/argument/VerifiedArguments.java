@@ -11,6 +11,7 @@ public class VerifiedArguments {
     private final VerifiedArgument<Integer> lineNumber;
     private final VerifiedArgument<String> unknownMacroName;
     private final VerifiedArgument<String> text;
+    private final VerifiedArgument<String[]> arguments;
 
     private VerifiedArguments(Builder builder) {
         player = builder.player;
@@ -18,6 +19,7 @@ public class VerifiedArguments {
         lineNumber = builder.lineNumber;
         unknownMacroName = builder.unknownMacroName;
         text = builder.text;
+        arguments = builder.arguments;
     }
 
     public static Builder newBuilder() {
@@ -44,12 +46,17 @@ public class VerifiedArguments {
         return text;
     }
 
+    public VerifiedArgument<String[]> getArguments() {
+        return arguments;
+    }
+
     public static final class Builder {
         private VerifiedArgument<Player> player = VerifiedArgument.absent();
         private VerifiedArgument<Macro> knownMacro = VerifiedArgument.absent();
         private VerifiedArgument<Integer> lineNumber = VerifiedArgument.absent();
         private VerifiedArgument<String> unknownMacroName = VerifiedArgument.absent();
         private VerifiedArgument<String> text = VerifiedArgument.absent();
+        private VerifiedArgument<String[]> arguments = VerifiedArgument.absent();
 
         private Builder() {
         }
@@ -79,6 +86,11 @@ public class VerifiedArguments {
             return this;
         }
 
+        public Builder withArguments(VerifiedArgument<String[]> arguments) {
+            this.arguments = arguments;
+            return this;
+        }
+
         public VerifiedArguments build() {
             return new VerifiedArguments(this);
         }
@@ -97,12 +109,12 @@ public class VerifiedArguments {
                 Objects.equals(knownMacro, that.knownMacro) &&
                 Objects.equals(lineNumber, that.lineNumber) &&
                 Objects.equals(unknownMacroName, that.unknownMacroName) &&
-                Objects.equals(text, that.text);
+                Objects.equals(text, that.text) &&
+                Objects.equals(arguments, that.arguments);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(player, knownMacro, lineNumber, unknownMacroName, text);
+        return Objects.hash(player, knownMacro, lineNumber, unknownMacroName, text, arguments);
     }
-
 }

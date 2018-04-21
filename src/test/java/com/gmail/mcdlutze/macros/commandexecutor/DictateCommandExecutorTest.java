@@ -48,15 +48,15 @@ public class DictateCommandExecutorTest {
 
     @Test
     public void successfulDictateTest() {
-        Macro macro = new Macro("macroName");
-        when(macroSet.containsMacro("macroName")).thenReturn(false);
+        Macro macro = new Macro("myMacro");
+        when(macroSet.containsMacro("myMacro")).thenReturn(false);
 
-        String[] args = "macroName".split(" ");
+        String[] args = "myMacro".split(" ");
         sut.onCommand(player, command, "label", args);
 
-        verify(macroSet).putMacro("macroName", macro);
+        verify(macroSet).putMacro("myMacro", macro);
         verify(dictatorManager).startDictating(player, macro);
-        verify(player).sendMessage("Dictating macro \"macroName\".");
+        verify(player).sendMessage("Dictating macro \"myMacro\".");
         verify(player).sendMessage("Enter \"//\" to stop dictating.");
     }
 

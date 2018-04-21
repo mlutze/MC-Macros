@@ -48,16 +48,16 @@ public class EditCommandExecutorTest {
 
     @Test
     public void successfulEditTest() {
-        when(macroSet.containsMacro("macroName")).thenReturn(true);
-        when(macroSet.getMacro("macroName")).thenReturn(macro);
+        when(macroSet.containsMacro("myMacro")).thenReturn(true);
+        when(macroSet.getMacro("myMacro")).thenReturn(macro);
         when(macro.length()).thenReturn(1);
-        when(macro.getName()).thenReturn("macroName");
+        when(macro.getName()).thenReturn("myMacro");
 
-        String[] args = "macroName 0 text text text".split(" ");
+        String[] args = "myMacro 0 text text text".split(" ");
         sut.onCommand(player, command, "label", args);
 
         verify(macro).editLine(0, "text text text");
-        verify(player).sendMessage("Line 0 edited in macro \"macroName\".");
+        verify(player).sendMessage("Line 0 edited in macro \"myMacro\".");
     }
 
     @Test
@@ -74,11 +74,11 @@ public class EditCommandExecutorTest {
     @Test
     public void suggestLinesTest() {
         List<String> expected = Collections.singletonList("0");
-        when(macroSet.containsMacro("macroName")).thenReturn(true);
-        when(macroSet.getMacro("macroName")).thenReturn(macro);
+        when(macroSet.containsMacro("myMacro")).thenReturn(true);
+        when(macroSet.getMacro("myMacro")).thenReturn(macro);
         when(macro.length()).thenReturn(1);
 
-        String[] args = "macroName 1".split(" ");
+        String[] args = "myMacro 1".split(" ");
         List<String> actual = sut.onTabComplete(player, command, "label", args);
 
         assertEquals(expected, actual);
@@ -87,12 +87,12 @@ public class EditCommandExecutorTest {
     @Test
     public void autoFillLineTest() {
         List<String> expected = Collections.singletonList("previously written");
-        when(macroSet.containsMacro("macroName")).thenReturn(true);
-        when(macroSet.getMacro("macroName")).thenReturn(macro);
+        when(macroSet.containsMacro("myMacro")).thenReturn(true);
+        when(macroSet.getMacro("myMacro")).thenReturn(macro);
         when(macro.length()).thenReturn(1);
         when(macro.getLine(0)).thenReturn("previously written");
 
-        String[] args = "macroName 0 t".split(" ");
+        String[] args = "myMacro 0 t".split(" ");
         List<String> actual = sut.onTabComplete(player, command, "label", args);
 
         assertEquals(expected, actual);
@@ -111,9 +111,9 @@ public class EditCommandExecutorTest {
     @Test
     public void suggestNothingToInvalidMacroTest() {
         List<String> expected = Collections.emptyList();
-        when(macroSet.containsMacro("macroName")).thenReturn(false);
+        when(macroSet.containsMacro("myMacro")).thenReturn(false);
 
-        String[] args = "macroName 0".split(" ");
+        String[] args = "myMacro 0".split(" ");
         List<String> actual = sut.onTabComplete(player, command, "label", args);
 
         assertEquals(expected, actual);
@@ -122,10 +122,10 @@ public class EditCommandExecutorTest {
     @Test
     public void suggestNothingToInvalidLineNumberTest() {
         List<String> expected = Collections.emptyList();
-        when(macroSet.containsMacro("macroName")).thenReturn(true);
-        when(macroSet.getMacro("macroName")).thenReturn(macro);
+        when(macroSet.containsMacro("myMacro")).thenReturn(true);
+        when(macroSet.getMacro("myMacro")).thenReturn(macro);
 
-        String[] args = "macroName invalid t".split(" ");
+        String[] args = "myMacro invalid t".split(" ");
         List<String> actual = sut.onTabComplete(player, command, "label", args);
 
         assertEquals(expected, actual);
@@ -134,11 +134,11 @@ public class EditCommandExecutorTest {
     @Test
     public void suggestNothingToExtraArgumentsTest() {
         List<String> expected = Collections.emptyList();
-        when(macroSet.containsMacro("macroName")).thenReturn(true);
-        when(macroSet.getMacro("macroName")).thenReturn(macro);
+        when(macroSet.containsMacro("myMacro")).thenReturn(true);
+        when(macroSet.getMacro("myMacro")).thenReturn(macro);
         when(macro.length()).thenReturn(1);
 
-        String[] args = "macroName 0 text text".split(" ");
+        String[] args = "myMacro 0 text text".split(" ");
         List<String> actual = sut.onTabComplete(player, command, "label", args);
 
         assertEquals(expected, actual);

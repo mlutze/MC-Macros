@@ -132,6 +132,14 @@ public class ArgumentsVerifierTest {
     }
 
     @Test(expected = ArgumentsVerificationException.class)
+    public void beginsMacroUnknownMacroNameLoudTest() throws ArgumentsVerificationException {
+        when(parsedArguments.getUnknownMacroName()).thenReturn(Optional.of("macRo"));
+
+        sut = ArgumentsVerifier.newBuilder().withMacroSetManager(macroSetManager).requireUnknownMacroName().build();
+        sut.verify(player, parsedArguments);
+    }
+
+    @Test(expected = ArgumentsVerificationException.class)
     public void absentUnknownMacroNameLoudTest() throws ArgumentsVerificationException {
         when(parsedArguments.getUnknownMacroName()).thenReturn(Optional.empty());
 
@@ -144,6 +152,14 @@ public class ArgumentsVerifierTest {
         when(parsedArguments.getText()).thenReturn(Optional.empty());
 
         sut = ArgumentsVerifier.newBuilder().withMacroSetManager(macroSetManager).requireText().build();
+        sut.verify(player, parsedArguments);
+    }
+
+    @Test(expected = ArgumentsVerificationException.class)
+    public void absentArgumentsLoudTest() throws ArgumentsVerificationException {
+        when(parsedArguments.getArguments()).thenReturn(Optional.empty());
+
+        sut = ArgumentsVerifier.newBuilder().withMacroSetManager(macroSetManager).requireArguments().build();
         sut.verify(player, parsedArguments);
     }
 
@@ -235,6 +251,16 @@ public class ArgumentsVerifierTest {
     }
 
     @Test
+    public void beginsMacroUnknownMacroNameQuietTest() throws ArgumentsVerificationException {
+        when(parsedArguments.getUnknownMacroName()).thenReturn(Optional.of("macRo"));
+
+        sut = ArgumentsVerifier.newBuilder().withMacroSetManager(macroSetManager).requireUnknownMacroName().build();
+        VerifiedArgument<String> unknownMacroName = sut.verifyQuietly(player, parsedArguments).getUnknownMacroName();
+
+        assertEquals(VerifiedArgument.invalid(), unknownMacroName);
+    }
+
+    @Test
     public void absentUnknownMacroNameQuietTest() {
         when(parsedArguments.getUnknownMacroName()).thenReturn(Optional.empty());
 
@@ -252,5 +278,16 @@ public class ArgumentsVerifierTest {
         VerifiedArgument<String> text = sut.verifyQuietly(player, parsedArguments).getText();
 
         assertEquals(VerifiedArgument.absent(), text);
+    }
+
+
+    @Test
+    public void absentArgumentsQuietTest() throws ArgumentsVerificationException {
+        when(parsedArguments.getArguments()).thenReturn(Optional.empty());
+
+        sut = ArgumentsVerifier.newBuilder().withMacroSetManager(macroSetManager).requireArguments().build();
+        VerifiedArgument<String[]> arguments = sut.verifyQuietly(player, parsedArguments).getArguments();
+
+        assertEquals(VerifiedArgument.absent(), arguments);
     }
 }

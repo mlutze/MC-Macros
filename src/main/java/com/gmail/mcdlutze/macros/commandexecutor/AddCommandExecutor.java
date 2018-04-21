@@ -28,6 +28,7 @@ public class AddCommandExecutor implements CommandExecutor, TabCompleter {
                         .requireText().build();
     }
 
+    // TODO consider more informative callbacks
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         ParsedArguments parsedArguments = argumentsParser.parse(args);

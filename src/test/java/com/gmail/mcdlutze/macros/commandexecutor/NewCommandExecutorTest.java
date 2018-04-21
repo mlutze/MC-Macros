@@ -46,15 +46,15 @@ public class NewCommandExecutorTest {
 
     @Test
     public void successfulNewTest() {
-        Macro macro = new Macro("macroName");
+        Macro macro = new Macro("myMacro");
         macro.addLine("text text text");
-        when(macroSet.containsMacro("macroName")).thenReturn(false);
+        when(macroSet.containsMacro("myMacro")).thenReturn(false);
 
-        String[] args = "macroName text text text".split(" ");
+        String[] args = "myMacro text text text".split(" ");
         sut.onCommand(player, command, "label", args);
 
-        verify(macroSet).putMacro("macroName", macro);
-        verify(player).sendMessage("Created macro \"macroName\".");
+        verify(macroSet).putMacro("myMacro", macro);
+        verify(player).sendMessage("Created macro \"myMacro\".");
     }
 
     @Test

@@ -14,22 +14,20 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class RunCommandExecutor implements CommandExecutor, TabCompleter {
 
     private final MacroSetManager macroSetManager;
+    private final MacroRunnerManager macroRunnerManager;
     private final ArgumentsParser argumentsParser;
     private final ArgumentsVerifier argumentsVerifier;
-    private final MacroRunnerManager macroRunnerManager;
 
     public RunCommandExecutor(MacroSetManager macroSetManager, MacroRunnerManager macroRunnerManager) {
         this.macroSetManager = macroSetManager;
-        this.argumentsParser = ArgumentsParser.newBuilder().withKnownMacroName().withText().build();
+        this.macroRunnerManager = macroRunnerManager;
+        this.argumentsParser = ArgumentsParser.newBuilder().withKnownMacroName().withArguments().build();
         this.argumentsVerifier =
                 ArgumentsVerifier.newBuilder().withMacroSetManager(macroSetManager).requireKnownMacroName().build();
-        this.macroRunnerManager = macroRunnerManager;
     }
 
     @Override
@@ -45,7 +43,7 @@ public class RunCommandExecutor implements CommandExecutor, TabCompleter {
 
         Player player = verifiedArguments.getPlayer().get();
         Macro macro = verifiedArguments.getKnownMacro().get();
-        String[] macroArgs = parsedArguments.getText().orElse("").split(" ");
+        String[] macroArgs = parsedArguments.getArguments().orElse(new String[]{});
 
         if (macroRunnerManager.isRunning(player)) {
             player.sendMessage("You cannot run a macro from a macro.");

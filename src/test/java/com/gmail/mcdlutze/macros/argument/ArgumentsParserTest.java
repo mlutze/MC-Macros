@@ -21,4 +21,15 @@ public class ArgumentsParserTest {
         assertEquals(expected, actual);
     }
 
+    @Test
+    public void combineQuotedArgumentsTest() {
+        sut = ArgumentsParser.newBuilder().withArguments().build();
+        String[] args = "\"arg one\" \"arg t\"wo with a thing in the middle\" arg3 \"\" \"\"quoted arg five\"\"".split(" ");
+        String[] expectedArgs = {"arg one", "arg t\"wo with a thing in the middle", "arg3", "", "\"quoted arg five\""};
+        ParsedArguments expected = ParsedArguments.newBuilder().withArguments(expectedArgs).build();
+        ParsedArguments actual = sut.parse(args);
+
+        assertEquals(expected, actual);
+    }
+
 }

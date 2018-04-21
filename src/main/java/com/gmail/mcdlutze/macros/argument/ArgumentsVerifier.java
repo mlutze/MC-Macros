@@ -16,6 +16,7 @@ public class ArgumentsVerifier {
     private final boolean requireUnknownMacroName;
     private final boolean requireLineNumber;
     private final boolean requireText;
+    private final boolean requireArguments;
 
     private ArgumentsVerifier(Builder builder) {
         Objects.requireNonNull(builder.macroSetManager);
@@ -23,6 +24,7 @@ public class ArgumentsVerifier {
         requireUnknownMacroName = builder.requireUnknownMacroName;
         requireLineNumber = builder.requireLineNumber;
         requireText = builder.requireText;
+        requireArguments = builder.requireArguments;
         macroSetManager = builder.macroSetManager;
     }
 
@@ -76,6 +78,11 @@ public class ArgumentsVerifier {
         if (requireText) {
             VerifiedArgument<String> text = verifyText(parsedArguments, quiet);
             verifiedArguments.withText(text);
+        }
+
+        if (requireArguments) {
+            VerifiedArgument<String[]> arguments = verifyArguments(parsedArguments, quiet);
+            verifiedArguments.withArguments(arguments);
         }
 
         return verifiedArguments.build();
@@ -151,8 +158,8 @@ public class ArgumentsVerifier {
     }
 
     private VerifiedArgument<String> verifyUnknownMacroName(MacroSet macroSet, ParsedArguments parsedArguments,
-                                                            boolean quiet)
-            throws ArgumentsVerificationException {
+                                                            boolean quiet) throws ArgumentsVerificationException {
+
         Optional<String> unknownMacroNameOptional = parsedArguments.getUnknownMacroName();
         if (!unknownMacroNameOptional.isPresent()) {
             if (quiet) {
@@ -162,14 +169,14 @@ public class ArgumentsVerifier {
             }
         }
         String unknownMacroName = unknownMacroNameOptional.get();
-        if (!unknownMacroName.matches("\\w+")) {
+        if (!unknownMacroName.matches("(?i)(?!macro)\\w+")) {
             if (quiet) {
                 return VerifiedArgument.invalid();
             } else {
-                throw new ArgumentsVerificationException("Macro name must only contain letters, numbers, or underscores.");
+                throw new ArgumentsVerificationException(
+                        "Macro name must be alphanumeric and must not begin with \"macro\".");
             }
         }
-        // TODO prevent new macro from beginning with "macro"
 
         if (macroSet.containsMacro(unknownMacroName)) {
             if (quiet) {
@@ -195,12 +202,26 @@ public class ArgumentsVerifier {
         return VerifiedArgument.of(textOptional.get());
     }
 
+    private VerifiedArgument<String[]> verifyArguments(ParsedArguments parsedArguments, boolean quiet)
+            throws ArgumentsVerificationException {
+        Optional<String[]> argumentsOptional = parsedArguments.getArguments();
+        if (!argumentsOptional.isPresent()) {
+            if (quiet) {
+                return VerifiedArgument.absent();
+            } else {
+                throw new ArgumentsVerificationException("Arguments required");
+            }
+        }
+        return VerifiedArgument.of(argumentsOptional.get());
+    }
+
     public static final class Builder {
         private MacroSetManager macroSetManager;
         private boolean requireKnownMacroName = false;
         private boolean requireUnknownMacroName = false;
         private boolean requireLineNumber = false;
         private boolean requireText = false;
+        private boolean requireArguments = false;
 
         private Builder() {
         }
@@ -227,6 +248,11 @@ public class ArgumentsVerifier {
 
         public Builder requireText() {
             this.requireText = true;
+            return this;
+        }
+
+        public Builder requireArguments() {
+            this.requireArguments = true;
             return this;
         }
 

@@ -5,4 +5,5 @@ public enum ArgumentType {
     UNKNOWN_MACRO_NAME,
     MACRO_LINE_NUMBER,
     TEXT,
+    ARGUMENTS,
 }

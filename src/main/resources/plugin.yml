@@ -30,6 +30,11 @@ commands:
       aliases: medit
       usage: /macroedit {macro name} {line} {text}
       permission: Macros.user
+   macroharden:
+      description: Allow use of a macro as a custom command.
+      aliases: mharden
+      usage: /macroharden {macro name}
+      permission: Macros.user
    macroinsert:
       description: Insert a line into a macro.
       aliases: minsert
@@ -60,12 +65,16 @@ commands:
       aliases: mrun
       usage: /macrorun {macro name} [{arguments}]
       permission: Macros.user
+   macrosoften:
+      description: Disallow use of a macro as a custom command.
+      aliases: msoften
+      usage: /macrosoften {macro name}
+      permission: Macros.user
    macroview:
       description: View the contents of a macro.
       aliases: mview
       usage: /macroview {macro name} [{arguments}]
       permission: Macros.user
-# TODO add harden & soften commands
 
 permissions:
    Macros.user:

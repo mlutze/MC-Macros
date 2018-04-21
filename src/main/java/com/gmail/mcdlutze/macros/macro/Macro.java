@@ -11,16 +11,18 @@ import java.util.stream.Collectors;
 public class Macro {
     private String name;
     private List<String> lines;
-    // TODO add isHard
+    private boolean hard;
 
     public Macro(String name) {
         this.name = name;
         this.lines = new ArrayList<>();
+        this.hard = false;
     }
 
-    public Macro(String name, List<String> lines) {
-        this(name);
+    public Macro(String name, List<String> lines, boolean hard) {
+        this.name = name;
         this.lines = lines;
+        this.hard = hard;
     }
 
     public String getName() {
@@ -67,6 +69,14 @@ public class Macro {
 
     public List<String> getFilledLines(String[] args) {
         return lines.stream().map(s -> fillArgs(s, args)).collect(Collectors.toList());
+    }
+
+    public boolean isHard() {
+        return hard;
+    }
+
+    public void setHard(boolean hard) {
+        this.hard = hard;
     }
 
     private String fillArgs(String line, String[] macroArgs) {

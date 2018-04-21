@@ -88,7 +88,7 @@ public class CopyCommandExecutorTest {
     public void suggestNothingToExtraArgumentsTest() {
         List<String> expected = Collections.emptyList();
 
-        String[] args = "macroName text text text".split(" ");
+        String[] args = "myMacro text text text".split(" ");
         List<String> actual = sut.onTabComplete(player, command, "label", args);
         assertEquals(expected, actual);
     }

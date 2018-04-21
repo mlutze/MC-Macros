@@ -64,7 +64,7 @@ public class ConfigurationManagerTest {
         when(fileConfiguration.isConfigurationSection(path)).thenReturn(true);
 
         MacroSet expected = new MacroSet();
-        expected.putMacro("macroName", new Macro("macroName", Collections.singletonList("line")));
+        expected.putMacro("macroName", new Macro("macroName", Collections.singletonList("line"),false));
         MacroSet actual = sut.getMacroSet(player);
 
         assertEquals(expected, actual);
@@ -75,7 +75,7 @@ public class ConfigurationManagerTest {
         when(fileConfiguration.isConfigurationSection(path)).thenReturn(false);
 
         MacroSet expected = new MacroSet();
-        expected.putMacro("macroName", new Macro("macroName", Collections.singletonList("line")));
+        expected.putMacro("macroName", new Macro("macroName", Collections.singletonList("line"), false));
         MacroSet actual = sut.getMacroSet(player);
 
         assertEquals(expected, actual);
@@ -86,7 +86,7 @@ public class ConfigurationManagerTest {
         when(fileConfiguration.isConfigurationSection(path)).thenReturn(true);
 
         MacroSet macroSet = new MacroSet();
-        macroSet.putMacro("macroName", new Macro("macroName", Collections.singletonList("line")));
+        macroSet.putMacro("macroName", new Macro("macroName", Collections.singletonList("line"), false));
         sut.putMacroSet(player, macroSet);
 
         verify(macroConfigurationSection).set(MACRO_NAME_KEY, "macroName");
