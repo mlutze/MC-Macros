@@ -12,6 +12,7 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
@@ -73,10 +74,10 @@ public class EditCommandExecutorTest {
 
     @Test
     public void suggestLinesTest() {
-        List<String> expected = Collections.singletonList("0");
+        List<String> expected = Arrays.asList("1", "10");
         when(macroSet.containsMacro("myMacro")).thenReturn(true);
         when(macroSet.getMacro("myMacro")).thenReturn(macro);
-        when(macro.length()).thenReturn(1);
+        when(macro.length()).thenReturn(11);
 
         String[] args = "myMacro 1".split(" ");
         List<String> actual = sut.onTabComplete(player, command, "label", args);

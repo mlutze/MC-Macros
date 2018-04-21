@@ -38,6 +38,7 @@ public class DictationListener implements Listener {
 
         if (message.equals("//")) {
             dictatorManager.stopDictating(player);
+            // TODO send message & test
         } else {
             Macro macro = dictatorManager.getMacroForPlayer(player);
             macro.addLine(message);

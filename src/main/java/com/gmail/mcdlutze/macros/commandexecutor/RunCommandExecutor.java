@@ -10,10 +10,10 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class RunCommandExecutor implements CommandExecutor, TabCompleter {
 
@@ -64,6 +64,7 @@ public class RunCommandExecutor implements CommandExecutor, TabCompleter {
     public List<String> onTabComplete(CommandSender sender, Command command, String label, String[] args) {
         ParsedArguments parsedArguments = argumentsParser.parse(Arrays.copyOfRange(args, 0, args.length - 1));
         VerifiedArguments verifiedArguments = argumentsVerifier.verifyQuietly(sender, parsedArguments);
+        String prefix = args[args.length - 1];
 
         VerifiedArgument<Player> player = verifiedArguments.getPlayer();
         if (!player.isValid()) {
@@ -72,7 +73,8 @@ public class RunCommandExecutor implements CommandExecutor, TabCompleter {
 
         VerifiedArgument<Macro> macro = verifiedArguments.getKnownMacro();
         if (!macro.isPresent()) {
-            return new ArrayList<>(macroSetManager.getMacroSet(player.get()).names());
+            return macroSetManager.getMacroSet(player.get()).names().stream().filter(n -> n.startsWith(prefix))
+                    .collect(Collectors.toList());
         }
 
         return Collections.emptyList();
