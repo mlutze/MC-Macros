@@ -32,6 +32,7 @@ public class DictationListenerTest {
     public void setup() {
         sut = new DictationListener(dictatorManager);
         when(dictatorManager.getMacroForPlayer(player)).thenReturn(macro);
+        when(macro.getName()).thenReturn("myMacro");
     }
 
     @Test
@@ -44,6 +45,7 @@ public class DictationListenerTest {
 
         assertFalse(asyncPlayerChatEvent.isCancelled());
         verifyZeroInteractions(macro);
+        verifyZeroInteractions(player);
     }
 
     @Test
@@ -56,6 +58,7 @@ public class DictationListenerTest {
 
         assertFalse(playerCommandPreprocessEvent.isCancelled());
         verifyZeroInteractions(macro);
+        verifyZeroInteractions(player);
     }
 
     @Test
@@ -69,6 +72,7 @@ public class DictationListenerTest {
         assertTrue(playerCommandPreprocessEvent.isCancelled());
         verify(dictatorManager).stopDictating(player);
         verifyZeroInteractions(macro);
+        verifyZeroInteractions(player);
     }
 
     @Test
@@ -81,6 +85,7 @@ public class DictationListenerTest {
 
         assertTrue(asyncPlayerChatEvent.isCancelled());
         verify(macro).addLine("message");
+        verify(player).sendMessage("Line added to macro \"myMacro\".");
     }
 
     @Test
@@ -93,6 +98,7 @@ public class DictationListenerTest {
 
         assertTrue(playerCommandPreprocessEvent.isCancelled());
         verify(macro).addLine("message");
+        verify(player).sendMessage("Line added to macro \"myMacro\".");
     }
 
     @Test
