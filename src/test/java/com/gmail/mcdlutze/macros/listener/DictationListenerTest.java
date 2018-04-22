@@ -72,7 +72,7 @@ public class DictationListenerTest {
         assertTrue(playerCommandPreprocessEvent.isCancelled());
         verify(dictatorManager).stopDictating(player);
         verifyZeroInteractions(macro);
-        verifyZeroInteractions(player);
+        verify(player).sendMessage("Stopped dictating.");
     }
 
     @Test
