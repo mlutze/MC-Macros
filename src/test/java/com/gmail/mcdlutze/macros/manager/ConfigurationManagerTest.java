@@ -83,8 +83,6 @@ public class ConfigurationManagerTest {
 
     @Test
     public void putMacroSetTest() {
-        when(fileConfiguration.isConfigurationSection(path)).thenReturn(true);
-
         MacroSet macroSet = new MacroSet();
         macroSet.putMacro("macroName", new Macro("macroName", Collections.singletonList("line"), false));
         sut.putMacroSet(player, macroSet);

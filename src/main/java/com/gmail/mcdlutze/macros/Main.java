@@ -13,6 +13,7 @@ import org.bukkit.command.PluginCommand;
 import org.bukkit.command.TabCompleter;
 import org.bukkit.plugin.java.JavaPlugin;
 
+// STOPSHIP: 2018-04-26 update README
 public class Main extends JavaPlugin {
 
     // managers

@@ -27,8 +27,13 @@ public class ConfigurationManager {
     }
 
     public MacroSet getMacroSet(Player player) {
-        ConfigurationSection playerMacrosSection =
-                getOrCreateSection(PLAYER_DATA_KEY, player.getUniqueId().toString(), MACROS_KEY);
+        String playerMacrosSectionName = String.join(".", PLAYER_DATA_KEY, player.getUniqueId().toString(), MACROS_KEY);
+        ConfigurationSection playerMacrosSection;
+        if (plugin.getConfig().isConfigurationSection(playerMacrosSectionName)) {
+            playerMacrosSection = plugin.getConfig().getConfigurationSection(playerMacrosSectionName);
+        } else {
+            playerMacrosSection = plugin.getConfig().createSection(playerMacrosSectionName);
+        }
 
         Set<String> macroKeys = playerMacrosSection.getKeys(false);
         MacroSet macroSet = new MacroSet();
@@ -41,8 +46,8 @@ public class ConfigurationManager {
     }
 
     public void putMacroSet(Player player, MacroSet macroSet) {
-        ConfigurationSection playerMacrosSection =
-                getOrCreateSection(PLAYER_DATA_KEY, player.getUniqueId().toString(), MACROS_KEY);
+        String playerMacrosSectionName = String.join(".", PLAYER_DATA_KEY, player.getUniqueId().toString(), MACROS_KEY);
+        ConfigurationSection playerMacrosSection = plugin.getConfig().createSection(playerMacrosSectionName);
 
         for (Macro macro : macroSet.macros()) {
             createConfigFromMacro(playerMacrosSection, macro);
