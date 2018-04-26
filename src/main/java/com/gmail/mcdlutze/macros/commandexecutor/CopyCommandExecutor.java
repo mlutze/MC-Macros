@@ -41,6 +41,7 @@ public class CopyCommandExecutor implements CommandExecutor, TabCompleter {
         Player player = verifiedArguments.getPlayer().get();
         Macro oldMacro = verifiedArguments.getKnownMacro().get();
         String newMacroName = verifiedArguments.getUnknownMacroName().get();
+
         Macro newMacro = oldMacro.copy();
         newMacro.rename(newMacroName);
         macroSetManager.getMacroSet(player).putMacro(newMacroName, newMacro);

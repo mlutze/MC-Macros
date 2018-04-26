@@ -56,6 +56,8 @@ public class RenameCommandExecutorTest {
         String[] args = "oldName newName".split(" ");
         sut.onCommand(player, command, "label", args);
 
+        verify(macroSet).removeMacro("oldName");
+        verify(macroSet).putMacro("newName", macro);
         verify(macro).rename("newName");
         verify(player).sendMessage("Macro \"oldName\" renamed to \"newName\".");
     }

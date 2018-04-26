@@ -43,6 +43,8 @@ public class RenameCommandExecutor implements CommandExecutor, TabCompleter {
         String newMacroName = verifiedArguments.getUnknownMacroName().get();
 
         macro.rename(newMacroName);
+        macroSetManager.getMacroSet(player).removeMacro(oldMacroName);
+        macroSetManager.getMacroSet(player).putMacro(newMacroName, macro);
 
         player.sendMessage(String.format("Macro \"%s\" renamed to \"%s\".", oldMacroName, newMacroName));
         return true;
